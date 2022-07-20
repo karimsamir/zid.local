@@ -9,6 +9,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * Class User
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class User extends Model
 {
-	use HasFactory;
+	use HasFactory, Notifiable;
 	protected $table = 'users';
 
 	protected $dates = [

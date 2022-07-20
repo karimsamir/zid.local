@@ -43,19 +43,37 @@ class MerchantController extends Controller
             'password' => 'required|max:150',
         ]);
         
+        $email = $request->string('email')->trim();
+
+        $merchant = Merchant::where("email", $email)->first();
+
+        if ($merchant) {
+            return response()->json([
+                'message' => 'error',
+                'merchant' => 'Merchant already exists',
+                'token' => false,
+            ]);    
+        }
+
         // create new merchant
         $merchant = new Merchant();
- 
-   
-        $merchant->name = $request->string('name')->trim(); 
-        $merchant->store_name = $request->string('store_name')->trim(); 
-        $merchant->email = $request->string('email')->trim(); 
-        $merchant->password = Hash::make($request->string('password')->trim()); 
-        
+
+        $merchant->name = $request->string('name')->trim();
+        $merchant->store_name = $request->string('store_name')->trim();
+        $merchant->email = $email;
+        $merchant->password = Hash::make($request->string('password')->trim());
+
         $merchant->save();
+
+
+        $token =  $merchant->createToken("merchant_" . $merchant->id, [
+            'store:add', 'store:update', 'products:add', 'products:update'
+        ])->plainTextToken;
         
         return response()->json([
             'message' => 'success',
+            'merchant' => 'Merchant created successfully',
+            'token' => $token,
         ]);
     }
 

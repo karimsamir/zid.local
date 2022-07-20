@@ -13,8 +13,8 @@ return new class extends Migration {
     public function up() {
         Schema::create('merchants', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 100);
-            $table->string('email', 100);
+            $table->string('name', 200);
+            $table->string('email', 100)->unique();
             $table->string('password', 150);
             $table->string('store_name', 255);
             $table->timestamps();
