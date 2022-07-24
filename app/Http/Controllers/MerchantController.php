@@ -39,6 +39,7 @@ class MerchantController extends Controller
         //register new Merchant
         $request->validate([
             'name' => 'required|max:100',
+            'store_name' => 'required|max:255',
             'email' => 'required|email',
             'password' => 'required|max:150',
         ]);
