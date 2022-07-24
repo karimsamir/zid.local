@@ -14,7 +14,13 @@ class AuthController extends Controller {
 
     public function login(Request $request) {
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        // dd($request);
+        // dd($request->email, bcrypt($request->password));
+        if (Auth::attempt([
+            'email' => $request->email, 
+            // 'password' =>  bcrypt($request->password)
+            'password' => $request->password
+            ])) {
             $authUser = Auth::user();
             // $success['token'] =  $authUser->createToken('MyAuthApp')->plainTextToken;
 
@@ -51,7 +57,7 @@ class AuthController extends Controller {
         $authUser->name = $input["name"];
         $authUser->email = $input["email"];
         $authUser->user_type = $input["user_type"];
-        $authUser->password = Hash::make($input["password"]);
+        $authUser->password = $input["password"];
 
         if ($input["user_type"] == "merchant") {
             $authUser->store_name = $input["store_name"];

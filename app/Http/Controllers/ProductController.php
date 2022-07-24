@@ -2,51 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PersonalAccessToken;
 use App\Models\Product;
 use App\Models\ProductDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class ProductController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
+class ProductController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        // die(var_dump($request->all()));
-        // dd($request);
-        $data = $request->all();
-        // dd($data["details"]);
-        // die(var_dump($data["details"][1]["name"]));
-
-        // $product = json_decode($request->all(), true);
+    public function store(Request $request) {
         //register new Product
-
         $validator = Validator::make($request->all(), [
             'token' => 'required|max:100',
             'name' => 'required|max:100',
@@ -58,91 +28,49 @@ class ProductController extends Controller
             // 'details.*.language' => 'required|min:2|max:2',
             // 'details.*.name' => 'required|max:100',
         ]);
- 
+
         if ($validator->fails()) {
-        //    dd(get_class_methods($validator));
-           dd($validator->getMessageBag());
+            return $this->sendError(
+                'Invalid.',
+                ['error' => $validator->getMessageBag()]
+            );
         }
- 
-        // // Retrieve the validated input...
-        // $validated = $validator->validated();
-
-        // $request->validate([
-        //     'name' => 'required|max:100',
-        //     'price' => 'required|numeric',
-        //     'shipping_cost' => 'required|nsumeric',
-        //     'is_vat_included' => 'required|boolean',
-        //     'vat_percentage' => 'required|numeric|min:0|max:100',
-        //     'details' => 'array:language, name, description',
-        //     'details.*.language' => 'required|min:2|max:2',
-        //     'details.*.name' => 'required|max:100',
-
-
-        // ]);
-
-        // dd("karim");
-
-        // check if merchant send a valid token
-        // $token = PersonalAccessToken::find
 
         // create new product
         $product = new Product();
 
-        $product->name = $request->string('name')->trim();
-        $product->price = $request->string('price')->trim();
-        $product->shipping_cost = $request->string('shipping_cost')->trim();
-        $product->vat_percentage = $request->string('vat_percentage')->trim();
-        $product->is_vat_included = $request->string('is_vat_included')->trim();
-        
+        $product->name = trim($request->name);
+        $product->user_id = Auth::user()->id;
+        $product->price = $request->price;
+        $product->shipping_cost = $request->shipping_cost;
+        $product->vat_percentage = $request->vat_percentage;
+        $product->is_vat_included = $request->is_vat_included;
+
         $product->save();
 
-        // dd($product);
-
         $details = $request->input("details");
-        
-        $product_details = array();
 
-        foreach ($details as $key => $value) {
-            // $product_detail = new ProductDetail();
 
-            $product_details[$key]["language"] = $value["language"];
-            $product_details[$key]["name"] = $value["name"];
-            $product_details[$key]["description"] = $value["description"];
-            
+        if (!empty($details)) {
+            $product_details = array();
+
+            foreach ($details as $value) {
+                $product_detail = new ProductDetail();
+
+                $product_detail->language = $value["language"];
+                $product_detail->name = $value["name"];
+                $product_detail->description = $value["description"];
+
+                array_push($product_details, $product_detail);
+            }
+            $product->product_details()->saveMany($product_details);
         }
 
-        $product->product_details()->saveMany($product_details);
-        
-
-        dd($product);
-        
         return response()->json([
             'message' => 'success',
             'product' => 'Product created successfully',
-            // 'token' => $token,
+            'product_id' => $product->id,
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Product $product)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Product $product)
-    {
-        //
     }
 
     /**
@@ -152,19 +80,38 @@ class ProductController extends Controller
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
-    {
-        //
-    }
+    public function update(Request $request, Product $product) {
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Product  $product
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Product $product)
-    {
-        //
+        // dd($request->all());
+        //update Product
+        $validator = Validator::make($request->all(), [
+            'token' => 'required|max:100',
+            'name' => 'required|max:100',
+            'price' => 'required|numeric',
+            'shipping_cost' => 'required|numeric',
+            'is_vat_included' => 'required|boolean',
+            'vat_percentage' => 'required|numeric|min:0|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError(
+                'Invalid.',
+                ['error' => $validator->getMessageBag()]
+            );
+        }
+
+        $product->name = trim($request->name);
+        $product->price = $request->price;
+        $product->shipping_cost = $request->shipping_cost;
+        $product->vat_percentage = $request->vat_percentage;
+        $product->is_vat_included = $request->is_vat_included;
+
+        $product->save();
+
+        return response()->json([
+            'message' => 'success',
+            'product' => 'Product updated successfully',
+            'product_id' => $product->id,
+        ]);
     }
 }
