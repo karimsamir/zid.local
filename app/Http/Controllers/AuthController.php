@@ -7,27 +7,20 @@ use App\Http\Controllers\Controller;
 use App\Models\PersonalAccessToken;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller {
 
     public function login(Request $request) {
 
-        // dd($request);
-        // dd($request->email, bcrypt($request->password));
         if (Auth::attempt([
             'email' => $request->email, 
-            // 'password' =>  bcrypt($request->password)
             'password' => $request->password
             ])) {
             $authUser = Auth::user();
-            // $success['token'] =  $authUser->createToken('MyAuthApp')->plainTextToken;
 
             $success['token'] =  $this->createUserToken($authUser);
-            // $merchant->createToken("merchant_" . $merchant->id, [
-            //     'store:add', 'store:update', 'products:add', 'products:update'
-            // ])->plainTextToken;
+
             $success['name'] =  $authUser->name;
 
             return $this->sendResponse($success, 'User signed in');
@@ -52,7 +45,7 @@ class AuthController extends Controller {
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        // $authUser = User::create($input);
+
         $authUser = new User();
         $authUser->name = $input["name"];
         $authUser->email = $input["email"];
@@ -65,7 +58,6 @@ class AuthController extends Controller {
         $authUser->save();
 
         $success['token'] =  $this->createUserToken($authUser);
-        // $success['token'] =  $user->createToken('MyAuthApp')->plainTextToken;
         $success['name'] =  $authUser->name;
 
         return $this->sendResponse($success, 'User created successfully.');
