@@ -32,10 +32,9 @@ Route::post('register', [AuthController::class, 'register']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     
-    Route::apiResource('merchant', MerchantController::class);
-    Route::apiResource('customer', CustomerController::class);
-    Route::apiResource('product', ProductController::class);
-    Route::apiResource('cart', CartController::class);
+    Route::put('/product/{product}', [ProductController::class, 'update']);
+    Route::post('/product', [ProductController::class, 'store']);
+    Route::post('/cart', [CartController::class, 'store']);
     
 });
 

@@ -16,7 +16,7 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //register new Product
+        //add new Product
         $validator = Validator::make($request->all(), [
             'token' => 'required|max:100',
             'name' => 'required|max:100',
@@ -81,8 +81,6 @@ class ProductController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Product $product) {
-
-        // dd($request->all());
         //update Product
         $validator = Validator::make($request->all(), [
             'token' => 'required|max:100',

@@ -11,26 +11,6 @@ use Illuminate\Support\Facades\Auth;
 class CartController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -68,60 +48,23 @@ class CartController extends Controller
 
         $total = 0;
         foreach ($all_carts as $key => $cart_details) {
-            $total += ($cart_details->product->price * $cart_details->quantity);
+            
+            
+            $product_price = $cart_details->product->price;
+            if (!$cart_details->product->is_vat_included) {
+                $product_price = $product_price * (1 + ($cart_details->product->vat_percentage/100));
+            }
+            $product_price = $product_price + $cart_details->product->shipping_cost;
+
+            $total += ($product_price * $cart_details->quantity);
+
         }
 
-        // $all_cart = Cart::where("user_id", Auth::user()->id);
-
         return response()->json([
-            'message' => 'success',
+                'message' => 'success',
             'cart' => 'Product added to cart successfully',
-            'total_price' => $total,
+            'total_price' => round($total, 2),
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(User $user)
-    {
-        //
-    }
 }
