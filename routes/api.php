@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ProductController;
@@ -34,6 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('merchant', MerchantController::class);
     Route::apiResource('customer', CustomerController::class);
     Route::apiResource('product', ProductController::class);
+    Route::apiResource('cart', CartController::class);
     
 });
 

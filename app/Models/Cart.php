@@ -14,13 +14,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * Class Cart
  * 
  * @property int $id
- * @property int $customer_id
+ * @property int $user_id
  * @property int $product_id
- * @property string $shipping_address
+ * @property int $quantity
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * 
- * @property Customer $customer
+ * @property User $User
  * @property Product $product
  *
  * @package App\Models
@@ -31,19 +31,19 @@ class Cart extends Model
 	protected $table = 'carts';
 
 	protected $casts = [
-		'customer_id' => 'int',
+		'user_id' => 'int',
 		'product_id' => 'int'
 	];
 
 	protected $fillable = [
-		'customer_id',
+		'user_id',
 		'product_id',
-		'shipping_address'
+		'quantity'
 	];
 
-	public function customer()
+	public function user()
 	{
-		return $this->belongsTo(Customer::class);
+		return $this->belongsTo(User::class);
 	}
 
 	public function product()

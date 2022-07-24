@@ -27,7 +27,7 @@ return new class extends Migration {
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
-            $table->text('shipping_address');
+            $table->integer('quantity')->nullable(false)->default(1);
             $table->timestamps();
 
             // $table->foreign('customer_id')->references('id')->on('customers');

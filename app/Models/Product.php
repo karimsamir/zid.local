@@ -49,11 +49,6 @@ class Product extends Model
 		'is_vat_included'
 	];
 
-	public function merchant()
-	{
-		return $this->belongsTo(Merchant::class);
-	}
-
 	public function carts()
 	{
 		return $this->hasMany(Cart::class);
