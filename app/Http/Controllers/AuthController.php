@@ -17,7 +17,7 @@ class AuthController extends Controller {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $authUser = Auth::user();
             // $success['token'] =  $authUser->createToken('MyAuthApp')->plainTextToken;
-        
+
             $success['token'] =  $this->createUserToken($authUser);
             // $merchant->createToken("merchant_" . $merchant->id, [
             //     'store:add', 'store:update', 'products:add', 'products:update'
@@ -65,23 +65,22 @@ class AuthController extends Controller {
         return $this->sendResponse($success, 'User created successfully.');
     }
 
-    private function createUserToken($authUser){
-    // delete old token if exists
-    PersonalAccessToken::where('tokenable_id', $authUser->id)->delete();
+    private function createUserToken($authUser) {
+        // delete old token if exists
+        PersonalAccessToken::where('tokenable_id', $authUser->id)->delete();
 
-    if ($authUser->user_type == "customer") {
+        if ($authUser->user_type == "customer") {
 
-        $token =  $authUser->createToken("customer_" . $authUser->id, [
-            'cart:add', 'cart:update'
-        ])->plainTextToken;
-    }
-    else if ($authUser->user_type == "merchant") {
+            $token =  $authUser->createToken("customer_" . $authUser->id, [
+                'cart:add', 'cart:update'
+            ])->plainTextToken;
+        } else if ($authUser->user_type == "merchant") {
 
-        $token =  $authUser->createToken("merchant_" . $authUser->id, [
-            'store:add', 'store:update', 'products:add', 'products:update'
-        ])->plainTextToken;
-    }
+            $token =  $authUser->createToken("merchant_" . $authUser->id, [
+                'store:add', 'store:update', 'products:add', 'products:update'
+            ])->plainTextToken;
+        }
 
-    return $token;
+        return $token;
     }
 }
