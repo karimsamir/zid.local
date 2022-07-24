@@ -1,0 +1,21 @@
+{
+    "token": "1|7HkVxLXSNGDrC8NTHrV3evwnPvup45Mg2QeuyXZQ",
+    "name": "woman shoe",
+    "price": "32.5",
+    "shipping_cost": "2.5",
+    "vat_percentage": "2.5",
+    "is_vat_included": "0",
+    "event": "customer.order.updated",
+    "details": [
+        {
+            "language": "ar",
+            "name": "حذاء",
+            "description": "حذاء"
+        },
+        {
+            "language": "en",
+            "name": "woman sport shoe",
+            "description": "woman sport shoes"
+        }
+    ]
+}

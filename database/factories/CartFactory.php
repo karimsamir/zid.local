@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Customer;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,10 +19,11 @@ class CartFactory extends Factory
     public function definition()
     {
         $products = Product::pluck('id')->toArray();
-        $customers = Customer::pluck('id')->toArray();
+        $customers = User::where("user_type", "customer")
+        ->pluck('id')->toArray();
         return [
             'product_id' => fake()->randomElement($products),
-            'customer_id' => fake()->randomElement($customers),
+            'user_id' => fake()->randomElement($customers),
             'shipping_address' => fake()->address(),
 
         ];

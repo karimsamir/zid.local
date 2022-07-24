@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Merchant;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,12 +17,14 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $merchants = Merchant::pluck('id')->toArray();
+        $merchants = User::where("user_type", "merchant")
+        ->pluck('id')->toArray();
         return [
             'name' => fake()->name(),
             'price' => fake()->randomNumber(2),
             'shipping_cost' => fake()->randomDigit(),
-            'merchant_id' => fake()->randomElement($merchants),
+            'user_id' => fake()->randomElement($merchants),
+            'vat_percentage' => fake()->numberBetween(0, 20),
             'is_vat_included' => fake()->boolean(25),
         ];
     }

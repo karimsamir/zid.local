@@ -15,13 +15,14 @@ return new class extends Migration {
             $table->id();
             $table->string('name', 100);
             // $table->integer('merchant_id');
-            $table->foreignId('merchant_id')
+            $table->foreignId('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
             $table->decimal('price', 10, 2);
             $table->decimal('shipping_cost', 10, 2);
+            $table->unsignedTinyInteger('vat_percentage')->default(0);
             $table->boolean('is_vat_included');
             $table->timestamps();
 
